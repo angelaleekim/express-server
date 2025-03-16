@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const mongodb_1 = require("mongodb");
 const dotenv_1 = __importDefault(require("dotenv"));
-const ImageProvider_1 = require("./ImageProvider"); // Assuming ImageProvider is in the same directory
+const images_1 = require("./routes/images");
 dotenv_1.default.config(); // Read the .env file in the current working directory, and load values into process.env.
 const PORT = process.env.PORT || 3000;
 const staticDir = process.env.STATIC_DIR || "public";
@@ -20,19 +20,11 @@ async function setUpServer() {
     console.log(collectionInfos.map((collectionInfo) => collectionInfo.name)); // For debug only
     const app = (0, express_1.default)();
     app.use(express_1.default.static(staticDir));
+    app.use(express_1.default.json()); // Add this line to parse JSON request bodies
     app.get("/hello", (req, res) => {
         res.send("Hello, World");
     });
-    app.get("/api/images", async (req, res) => {
-        try {
-            const imageProvider = new ImageProvider_1.ImageProvider(mongoClient);
-            const images = await imageProvider.getAllImages();
-            res.json(images);
-        }
-        catch (error) {
-            res.status(500).send("Error retrieving images");
-        }
-    });
+    (0, images_1.registerImageRoutes)(app, mongoClient);
     app.get("*", (req, res) => {
         console.log("none of the routes above me were matched");
     });

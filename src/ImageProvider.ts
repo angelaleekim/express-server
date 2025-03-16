@@ -20,7 +20,9 @@ interface UserDocument {
 export class ImageProvider {
   constructor(private readonly mongoClient: MongoClient) {}
 
-  async getAllImages(): Promise<(ImageDocument & { user: UserDocument })[]> {
+  async getAllImages(
+    id?: string
+  ): Promise<(ImageDocument & { user: UserDocument })[]> {
     const imageCollectionName = process.env.IMAGES_COLLECTION_NAME;
     const userCollectionName = process.env.USERS_COLLECTION_NAME;
     if (!imageCollectionName || !userCollectionName) {
@@ -36,7 +38,9 @@ export class ImageProvider {
       .db()
       .collection<UserDocument>(userCollectionName);
 
-    const images = await imageCollection.find().toArray();
+    const images = await imageCollection
+      .find(id ? { author: id } : {})
+      .toArray();
 
     const authorIds = images.map((image) => image.author);
     const authors = await userCollection
@@ -49,5 +53,32 @@ export class ImageProvider {
       ...image,
       user: authorMap.get(image.author) as UserDocument,
     }));
+  }
+
+  async updateImageName(
+    imageId: string,
+    newName: string
+  ): Promise<number> {
+    if (!imageId) {
+      throw new Error("Image ID must be provided");
+    }
+
+    const imageCollectionName = process.env.IMAGES_COLLECTION_NAME;
+    if (!imageCollectionName) {
+      throw new Error(
+        "Missing IMAGES_COLLECTION_NAME from environment variables"
+      );
+    }
+
+    const imageCollection = this.mongoClient
+      .db()
+      .collection<ImageDocument>(imageCollectionName);
+
+    const result = await imageCollection.updateOne(
+      { _id: imageId },
+      { $set: { name: newName } }
+    );
+
+    return result.matchedCount;
   }
 }

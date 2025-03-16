@@ -6,7 +6,7 @@ class ImageProvider {
     constructor(mongoClient) {
         this.mongoClient = mongoClient;
     }
-    async getAllImages() {
+    async getAllImages(id) {
         const imageCollectionName = process.env.IMAGES_COLLECTION_NAME;
         const userCollectionName = process.env.USERS_COLLECTION_NAME;
         if (!imageCollectionName || !userCollectionName) {
@@ -18,7 +18,9 @@ class ImageProvider {
         const userCollection = this.mongoClient
             .db()
             .collection(userCollectionName);
-        const images = await imageCollection.find().toArray();
+        const images = await imageCollection
+            .find(id ? { author: id } : {})
+            .toArray();
         const authorIds = images.map((image) => image.author);
         const authors = await userCollection
             .find({ _id: { $in: authorIds } })
@@ -28,6 +30,20 @@ class ImageProvider {
             ...image,
             user: authorMap.get(image.author),
         }));
+    }
+    async updateImageName(imageId, newName) {
+        if (!imageId) {
+            throw new Error("Image ID must be provided");
+        }
+        const imageCollectionName = process.env.IMAGES_COLLECTION_NAME;
+        if (!imageCollectionName) {
+            throw new Error("Missing IMAGES_COLLECTION_NAME from environment variables");
+        }
+        const imageCollection = this.mongoClient
+            .db()
+            .collection(imageCollectionName);
+        const result = await imageCollection.updateOne({ _id: imageId }, { $set: { name: newName } });
+        return result.matchedCount;
     }
 }
 exports.ImageProvider = ImageProvider;
