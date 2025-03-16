@@ -7,7 +7,9 @@ const express_1 = __importDefault(require("express"));
 const mongodb_1 = require("mongodb");
 const dotenv_1 = __importDefault(require("dotenv"));
 const images_1 = require("./routes/images");
-dotenv_1.default.config(); // Read the .env file in the current working directory, and load values into process.env.
+const auth_1 = require("./routes/auth");
+dotenv_1.default.config();
+require("dotenv/config");
 const PORT = process.env.PORT || 3000;
 const staticDir = process.env.STATIC_DIR || "public";
 const { MONGO_USER, MONGO_PWD, MONGO_CLUSTER, DB_NAME } = process.env;
@@ -24,6 +26,9 @@ async function setUpServer() {
     app.get("/hello", (req, res) => {
         res.send("Hello, World");
     });
+    (0, auth_1.registerAuthRoutes)(app, mongoClient);
+    // Middleware to verify auth token
+    app.use("/api/*", auth_1.verifyAuthToken);
     (0, images_1.registerImageRoutes)(app, mongoClient);
     app.get("*", (req, res) => {
         console.log("none of the routes above me were matched");

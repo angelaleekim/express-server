@@ -1,0 +1,45 @@
+### This is a comment
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{ "username": "newuser2", "password": "password2" }
+
+### A second example, each request should be delimited by a triple hash
+GET http://localhost:3000/api/images
+
+### Test case: Missing username and password
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{ "user": "newuser3" }
+
+### Test case: Username already taken
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{ "username": "newuser2", "password": "password2" }
+
+### Test case: Successful registration
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{ "username": "newuser4", "password": "password" }
+
+### Test case: Successful login
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{ "username": "newuser2", "password": "password2"}
+
+
+### Test case: Wrong password
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{ "username": "newuser2", "password": "wrongpassword" }
+
+### Test case: Authorization header
+GET http://localhost:3000/api/images
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ld3VzZXIyIiwiaWF0IjoxNzQyMTY0NTg1LCJleHAiOjE3NDIyNTA5ODV9.jRzZ295uRb1ci-8NABHy4ZuQHiGDiFEX0RNwwq_91m8
+
+
