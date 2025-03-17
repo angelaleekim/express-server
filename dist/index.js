@@ -9,7 +9,6 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const images_1 = require("./routes/images");
 const auth_1 = require("./routes/auth");
 dotenv_1.default.config();
-require("dotenv/config");
 const PORT = process.env.PORT || 3000;
 const staticDir = process.env.STATIC_DIR || "public";
 const { MONGO_USER, MONGO_PWD, MONGO_CLUSTER, DB_NAME } = process.env;
