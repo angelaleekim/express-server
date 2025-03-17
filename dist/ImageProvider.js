@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ImageProvider = void 0;
+const mongodb_1 = require("mongodb");
 class ImageProvider {
     mongoClient;
     constructor(mongoClient) {
@@ -8,27 +9,22 @@ class ImageProvider {
     }
     async getAllImages(id) {
         const imageCollectionName = process.env.IMAGES_COLLECTION_NAME;
-        const userCollectionName = process.env.USERS_COLLECTION_NAME;
-        if (!imageCollectionName || !userCollectionName) {
-            throw new Error("Missing IMAGES_COLLECTION_NAME or USERS_COLLECTION_NAME from environment variables");
+        if (!imageCollectionName) {
+            throw new Error("Missing IMAGES_COLLECTION_NAME from environment variables");
         }
         const imageCollection = this.mongoClient
             .db()
             .collection(imageCollectionName);
-        const userCollection = this.mongoClient
-            .db()
-            .collection(userCollectionName);
         const images = await imageCollection
             .find(id ? { author: id } : {})
             .toArray();
-        const authorIds = images.map((image) => image.author);
-        const authors = await userCollection
-            .find({ _id: { $in: authorIds } })
-            .toArray();
-        const authorMap = new Map(authors.map((author) => [author._id, author]));
         return images.map((image) => ({
-            ...image,
-            user: authorMap.get(image.author),
+            id: image.id, // Use id directly as a string
+            src: image.src,
+            description: image.description,
+            name: image.name,
+            author: image.author,
+            likes: image.likes,
         }));
     }
     async updateImageName(imageId, newName) {
@@ -42,8 +38,34 @@ class ImageProvider {
         const imageCollection = this.mongoClient
             .db()
             .collection(imageCollectionName);
-        const result = await imageCollection.updateOne({ _id: imageId }, { $set: { name: newName } });
+        const result = await imageCollection.updateOne({ id: new mongodb_1.ObjectId(imageId) }, { $set: { name: newName } });
         return result.matchedCount;
+    }
+    async addImage(image) {
+        const imageCollectionName = process.env.IMAGES_COLLECTION_NAME;
+        if (!imageCollectionName) {
+            throw new Error("Missing IMAGES_COLLECTION_NAME from environment variables");
+        }
+        const imageCollection = this.mongoClient
+            .db()
+            .collection(imageCollectionName);
+        await imageCollection.insertOne({
+            ...image,
+            id: new mongodb_1.ObjectId(), // Use ObjectId for MongoDB
+        });
+    }
+    async createImage(image) {
+        const imageCollectionName = process.env.IMAGES_COLLECTION_NAME;
+        if (!imageCollectionName) {
+            throw new Error("Missing IMAGES_COLLECTION_NAME from environment variables");
+        }
+        const imageCollection = this.mongoClient
+            .db()
+            .collection(imageCollectionName);
+        await imageCollection.insertOne({
+            ...image,
+            id: new mongodb_1.ObjectId(), // Generate a new unique id
+        });
     }
 }
 exports.ImageProvider = ImageProvider;

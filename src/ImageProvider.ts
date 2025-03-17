@@ -1,9 +1,9 @@
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 
 // Define the interface for the image documents
 interface ImageDocument {
-  _id: string;
-  url: string;
+  id: string; // Changed from _id to id
+  src: string;
   description?: string;
   name: string;
   author: string;
@@ -12,7 +12,7 @@ interface ImageDocument {
 
 // Define the interface for the user documents
 interface UserDocument {
-  _id: string;
+  id: string; // Changed from _id to id
   username: string;
   email: string;
 }
@@ -20,45 +20,35 @@ interface UserDocument {
 export class ImageProvider {
   constructor(private readonly mongoClient: MongoClient) {}
 
-  async getAllImages(
-    id?: string
-  ): Promise<(ImageDocument & { user: UserDocument })[]> {
+  async getAllImages(id?: string): Promise<ImageDocument[]> {
     const imageCollectionName = process.env.IMAGES_COLLECTION_NAME;
-    const userCollectionName = process.env.USERS_COLLECTION_NAME;
-    if (!imageCollectionName || !userCollectionName) {
+    if (!imageCollectionName) {
       throw new Error(
-        "Missing IMAGES_COLLECTION_NAME or USERS_COLLECTION_NAME from environment variables"
+        "Missing IMAGES_COLLECTION_NAME from environment variables"
       );
     }
 
     const imageCollection = this.mongoClient
       .db()
-      .collection<ImageDocument>(imageCollectionName);
-    const userCollection = this.mongoClient
-      .db()
-      .collection<UserDocument>(userCollectionName);
+      .collection<Omit<ImageDocument, "id"> & { id: string }>(
+        imageCollectionName
+      );
 
     const images = await imageCollection
       .find(id ? { author: id } : {})
       .toArray();
 
-    const authorIds = images.map((image) => image.author);
-    const authors = await userCollection
-      .find({ _id: { $in: authorIds } })
-      .toArray();
-
-    const authorMap = new Map(authors.map((author) => [author._id, author]));
-
     return images.map((image) => ({
-      ...image,
-      user: authorMap.get(image.author) as UserDocument,
+      id: image.id, // Use id directly as a string
+      src: image.src,
+      description: image.description,
+      name: image.name,
+      author: image.author,
+      likes: image.likes,
     }));
   }
 
-  async updateImageName(
-    imageId: string,
-    newName: string
-  ): Promise<number> {
+  async updateImageName(imageId: string, newName: string): Promise<number> {
     if (!imageId) {
       throw new Error("Image ID must be provided");
     }
@@ -72,13 +62,55 @@ export class ImageProvider {
 
     const imageCollection = this.mongoClient
       .db()
-      .collection<ImageDocument>(imageCollectionName);
+      .collection<Omit<ImageDocument, "id"> & { id: ObjectId }>(
+        imageCollectionName
+      );
 
     const result = await imageCollection.updateOne(
-      { _id: imageId },
+      { id: new ObjectId(imageId) },
       { $set: { name: newName } }
     );
 
     return result.matchedCount;
+  }
+
+  async addImage(image: Omit<ImageDocument, "id">): Promise<void> {
+    const imageCollectionName = process.env.IMAGES_COLLECTION_NAME;
+    if (!imageCollectionName) {
+      throw new Error(
+        "Missing IMAGES_COLLECTION_NAME from environment variables"
+      );
+    }
+
+    const imageCollection = this.mongoClient
+      .db()
+      .collection<Omit<ImageDocument, "id"> & { id: ObjectId }>(
+        imageCollectionName
+      );
+
+    await imageCollection.insertOne({
+      ...image,
+      id: new ObjectId(), // Use ObjectId for MongoDB
+    });
+  }
+
+  async createImage(image: Omit<ImageDocument, "id">): Promise<void> {
+    const imageCollectionName = process.env.IMAGES_COLLECTION_NAME;
+    if (!imageCollectionName) {
+      throw new Error(
+        "Missing IMAGES_COLLECTION_NAME from environment variables"
+      );
+    }
+
+    const imageCollection = this.mongoClient
+      .db()
+      .collection<Omit<ImageDocument, "id"> & { id: ObjectId }>(
+        imageCollectionName
+      );
+
+    await imageCollection.insertOne({
+      ...image,
+      id: new ObjectId(), // Generate a new unique id
+    });
   }
 }

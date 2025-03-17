@@ -21,13 +21,14 @@ export function verifyAuthToken(
   const token = authHeader && authHeader.split(" ")[1];
 
   if (!token) {
-    res.status(401).end();
+    res.status(401).send({ error: "Unauthorized", message: "Token missing" });
   } else {
     jwt.verify(token, signatureKey as string, (error, decoded) => {
       if (decoded) {
+        res.locals.token = decoded; // Store decoded token in res.locals
         next();
       } else {
-        res.status(403).end();
+        res.status(403).send({ error: "Forbidden", message: "Invalid token" });
       }
     });
   }

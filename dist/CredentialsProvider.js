@@ -12,7 +12,9 @@ class CredentialsProvider {
         if (!COLLECTION_NAME) {
             throw new Error("Missing CREDS_COLLECTION_NAME from env file");
         }
-        this.collection = mongoClient.db().collection(COLLECTION_NAME);
+        this.collection = mongoClient
+            .db()
+            .collection(COLLECTION_NAME);
     }
     async registerUser(username, plaintextPassword) {
         const existingUser = await this.collection.findOne({ username });
@@ -21,8 +23,6 @@ class CredentialsProvider {
         }
         const salt = await bcrypt_1.default.genSalt(10);
         const hashedPassword = await bcrypt_1.default.hash(plaintextPassword, salt);
-        console.log(`Salt: ${salt}`);
-        console.log(`Hash: ${hashedPassword}`);
         await this.collection.insertOne({ username, password: hashedPassword });
         return true; // Success
     }
