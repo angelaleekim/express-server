@@ -22,16 +22,17 @@ export function verifyAuthToken(
 
   if (!token) {
     res.status(401).send({ error: "Unauthorized", message: "Token missing" });
-  } else {
-    jwt.verify(token, signatureKey as string, (error, decoded) => {
-      if (decoded) {
-        res.locals.token = decoded; // Store decoded token in res.locals
-        next();
-      } else {
-        res.status(403).send({ error: "Forbidden", message: "Invalid token" });
-      }
-    });
+    return;
   }
+
+  jwt.verify(token, process.env.JWT_SECRET as string, (error, decoded) => {
+    if (error) {
+      res.status(403).send({ error: "Forbidden", message: "Invalid token" });
+    } else {
+      res.locals.token = decoded; // Ensure decoded token contains the username
+      next();
+    }
+  });
 }
 
 // Generate JWT token for a given username
@@ -78,6 +79,14 @@ export function registerAuthRoutes(
           });
           return;
         }
+
+        // Add user to the users collection
+        const usersCollection = mongoClient.db().collection("users");
+        await usersCollection.insertOne({
+          username,
+          bookedEvents: [], // Initialize with an empty list of booked events
+        });
+
         const token = await generateAuthToken(username);
         res.status(201).send({ token });
       } catch (error) {

@@ -19,18 +19,17 @@ function verifyAuthToken(req, res, next) {
     const token = authHeader && authHeader.split(" ")[1];
     if (!token) {
         res.status(401).send({ error: "Unauthorized", message: "Token missing" });
+        return;
     }
-    else {
-        jsonwebtoken_1.default.verify(token, signatureKey, (error, decoded) => {
-            if (decoded) {
-                res.locals.token = decoded; // Store decoded token in res.locals
-                next();
-            }
-            else {
-                res.status(403).send({ error: "Forbidden", message: "Invalid token" });
-            }
-        });
-    }
+    jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET, (error, decoded) => {
+        if (error) {
+            res.status(403).send({ error: "Forbidden", message: "Invalid token" });
+        }
+        else {
+            res.locals.token = decoded; // Ensure decoded token contains the username
+            next();
+        }
+    });
 }
 // Generate JWT token for a given username
 function generateAuthToken(username) {
@@ -64,6 +63,12 @@ function registerAuthRoutes(app, mongoClient) {
                 });
                 return;
             }
+            // Add user to the users collection
+            const usersCollection = mongoClient.db().collection("users");
+            await usersCollection.insertOne({
+                username,
+                bookedEvents: [], // Initialize with an empty list of booked events
+            });
             const token = await generateAuthToken(username);
             res.status(201).send({ token });
         }

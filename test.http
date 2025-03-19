@@ -1,20 +1,5 @@
-### This is a comment
-POST http://localhost:3000/auth/register
-Content-Type: application/json
-
-{ "username": "newuser2", "password": "password2" }
-
-### A second example, each request should be delimited by a triple hash
-GET http://localhost:3000/api/images
-
-### Test case: Missing username and password
-POST http://localhost:3000/auth/register
-Content-Type: application/json
-
-{ "user": "newuser3" }
-
-### Test case: Username already taken
-POST http://localhost:3000/auth/register
+### Register a new user
+POST http://localhost:3000/auth/login
 Content-Type: application/json
 
 { "username": "newuser2", "password": "password2" }
@@ -23,14 +8,50 @@ Content-Type: application/json
 POST http://localhost:3000/auth/register
 Content-Type: application/json
 
-{ "username": "newuser4", "password": "password" }
+{ "username": "newuser2", "password": "password2" }
+
+
+### Test case: Username already taken
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{ "username": "newuser3", "password": "password3" }
+
+### Test case: Username already taken
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{ "username": "newuser4", "password": "password4" }
+
+### Test case: Username already taken
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{ "username": "newuser5", "password": "password5" }
+
+### Test case: Username already taken
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{ "username": "newuser6", "password": "password6" }
+
+### Test case: Username already taken
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{ "username": "newuser7", "password": "password7" }
+
+### Test case: Missing username and password
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{ "user": "newuser3" }
 
 ### Test case: Successful login
 POST http://localhost:3000/auth/login
 Content-Type: application/json
 
-{ "username": "newuser2", "password": "password2"}
-
+{ "username": "newuser2", "password": "password2" }
 
 ### Test case: Wrong password
 POST http://localhost:3000/auth/login
@@ -38,8 +59,140 @@ Content-Type: application/json
 
 { "username": "newuser2", "password": "wrongpassword" }
 
-### Test case: Authorization header
-GET http://localhost:3000/api/images
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ld3VzZXIyIiwiaWF0IjoxNzQyMTY0NTg1LCJleHAiOjE3NDIyNTA5ODV9.jRzZ295uRb1ci-8NABHy4ZuQHiGDiFEX0RNwwq_91m8
+### Create a new event
+POST http://localhost:3000/api/events
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ld3VzZXIyIiwiaWF0IjoxNzQyMzYyNzAxLCJleHAiOjE3NDI0NDkxMDF9.hqFA3YaiwcF943lzDvwYSRguLMx4gdue19dJyseonDM
+
+{
+    "name": "Sample Event 3",
+    "date": "2023-12-25",
+    "description": "A test event"
+}
+
+### Create a new event: Angela's Birthday Party
+POST http://localhost:3000/api/events
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ld3VzZXI2IiwiaWF0IjoxNzQyMzU4OTIxLCJleHAiOjE3NDI0NDUzMjF9.XuLCxYuXMhLx33eHg6ceEg5yFz_PfZ3cn2uwSQN77Tc
+Content-Type: application/json
+
+{
+  "name": "Angela's Birthday Party",
+  "date": "2023-12-10",
+  "description": "A celebration for Angela's birthday with friends and family."
+}
+
+### Create a new event: Tech Conference 2023
+POST http://localhost:3000/api/events
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ld3VzZXI2IiwiaWF0IjoxNzQyMzU4OTIxLCJleHAiOjE3NDI0NDUzMjF9.XuLCxYuXMhLx33eHg6ceEg5yFz_PfZ3cn2uwSQN77Tc
+Content-Type: application/json
+
+{
+  "name": "Tech Conference 2023",
+  "date": "2023-12-15",
+  "description": "An annual conference showcasing the latest in technology."
+}
+
+### Create a new event: New Year Gala
+POST http://localhost:3000/api/events
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ld3VzZXI2IiwiaWF0IjoxNzQyMzU4OTIxLCJleHAiOjE3NDI0NDUzMjF9.XuLCxYuXMhLx33eHg6ceEg5yFz_PfZ3cn2uwSQN77Tc
+Content-Type: application/json
+
+{
+  "name": "New Year Gala",
+  "date": "2024-01-01",
+  "description": "A grand gala to welcome the new year with style."
+}
+
+### Create a new event: Music Festival 2023
+POST http://localhost:3000/api/events
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ld3VzZXI2IiwiaWF0IjoxNzQyMzU4OTIxLCJleHAiOjE3NDI0NDUzMjF9.XuLCxYuXMhLx33eHg6ceEg5yFz_PfZ3cn2uwSQN77Tc
+Content-Type: application/json
+
+{
+  "name": "Music Festival 2023",
+  "date": "2023-12-20",
+  "description": "A festival featuring live music performances from various artists."
+}
+
+### Create a new event: Charity Run
+POST http://localhost:3000/api/events
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ld3VzZXI2IiwiaWF0IjoxNzQyMzU4OTIxLCJleHAiOjE3NDI0NDUzMjF9.XuLCxYuXMhLx33eHg6ceEg5yFz_PfZ3cn2uwSQN77Tc
+Content-Type: application/json
+
+{
+  "name": "Charity Run",
+  "date": "2023-12-22",
+  "description": "A 5K run to raise funds for local charities."
+}
+
+### Create a new event: Winter Wonderland
+POST http://localhost:3000/api/events
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ld3VzZXI2IiwiaWF0IjoxNzQyMzU4OTIxLCJleHAiOjE3NDI0NDUzMjF9.XuLCxYuXMhLx33eHg6ceEg5yFz_PfZ3cn2uwSQN77Tc
+Content-Type: application/json
+
+{
+  "name": "Winter Wonderland",
+  "date": "2023-12-24",
+  "description": "A magical winter-themed event with activities for all ages."
+}
+
+### Create a new event: Startup Pitch Night
+POST http://localhost:3000/api/events
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ld3VzZXI2IiwiaWF0IjoxNzQyMzU4OTIxLCJleHAiOjE3NDI0NDUzMjF9.XuLCxYuXMhLx33eHg6ceEg5yFz_PfZ3cn2uwSQN77Tc
+Content-Type: application/json
+
+{
+  "name": "Startup Pitch Night",
+  "date": "2024-01-05",
+  "description": "An evening where startups pitch their ideas to investors."
+}
+
+### Create a new event: Art Exhibition
+POST http://localhost:3000/api/events
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ld3VzZXI2IiwiaWF0IjoxNzQyMzU4OTIxLCJleHAiOjE3NDI0NDUzMjF9.XuLCxYuXMhLx33eHg6ceEg5yFz_PfZ3cn2uwSQN77Tc
+Content-Type: application/json
+
+{
+  "name": "Art Exhibition",
+  "date": "2024-01-10",
+  "description": "An exhibition showcasing artwork from local and international artists."
+}
+
+### Get all events
+GET http://localhost:3000/api/events
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ld3VzZXI2IiwiaWF0IjoxNzQyMzU4OTIxLCJleHAiOjE3NDI0NDUzMjF9.XuLCxYuXMhLx33eHg6ceEg5yFz_PfZ3cn2uwSQN77Tc
+
+### Get booked events for the logged-in user
+GET http://localhost:3000/api/events/booked
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ld3VzZXI2IiwiaWF0IjoxNzQyMzU4OTIxLCJleHAiOjE3NDI0NDUzMjF9.XuLCxYuXMhLx33eHg6ceEg5yFz_PfZ3cn2uwSQN77Tc
+
+### Get all booked events for the logged-in user
+GET http://localhost:3000/api/events/booked
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ld3VzZXIyIiwiaWF0IjoxNzQyMzYzODM4LCJleHAiOjE3NDI0NTAyMzh9.zTx0kZc5bjo8_b1jPsyMXVeBt7w0JCqDKklKG9h4hv8
+
+### Get a specific event
+DELETE http://localhost:3000/api/events/67d8c4ed76c7e45f3c52663c
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3R1c2VyIiwiaWF0IjoxNzQyMjU5MDQ0LCJleHAiOjE3NDIzNDU0NDR9.yHpLGa01MrTimGHdA3DDiR4cXe5Co7hJRjnfgF-3dJk
+
+### Unbook an event
+PATCH http://localhost:3000/api/events/67da5b06499f9d6512d61bb7/unbook
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ld3VzZXI2IiwiaWF0IjoxNzQyMzU4OTIxLCJleHAiOjE3NDI0NDUzMjF9.XuLCxYuXMhLx33eHg6ceEg5yFz_PfZ3cn2uwSQN77Tc
+
+### Book an event
+PATCH http://localhost:3000/api/events/67d8c4f776c7e45f3c52663d/book
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3R1c2VyIiwiaWF0IjoxNzQyMjU5MDQ0LCJleHAiOjE3NDIzNDU0NDR9.yHpLGa01MrTimGHdA3DDiR4cXe5Co7hJRjnfgF-3dJk
+
+### Book an event: Angela's Birthday Party
+PATCH http://localhost:3000/api/events/67da5b03499f9d6512d61bb5/book
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ld3VzZXIyIiwiaWF0IjoxNzQyMzYzODM4LCJleHAiOjE3NDI0NTAyMzh9.zTx0kZc5bjo8_b1jPsyMXVeBt7w0JCqDKklKG9h4hv8
+### Book an event: Tech Conference 2023
+PATCH http://localhost:3000/api/events/67da5b06499f9d6512d61bb7/book
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ld3VzZXIyIiwiaWF0IjoxNzQyMzYzODM4LCJleHAiOjE3NDI0NTAyMzh9.zTx0kZc5bjo8_b1jPsyMXVeBt7w0JCqDKklKG9h4hv8
+### Unbook an event: Angela's Birthday Party
+PATCH http://localhost:3000/api/events/67da5b03499f9d6512d61bb5/unbook
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ld3VzZXIyIiwiaWF0IjoxNzQyMzYzODM4LCJleHAiOjE3NDI0NTAyMzh9.zTx0kZc5bjo8_b1jPsyMXVeBt7w0JCqDKklKG9h4hv8
+
+### Unbook an event: Tech Conference 2023
+PATCH http://localhost:3000/api/events/67da5b06499f9d6512d61bb7/unbook
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ld3VzZXI2IiwiaWF0IjoxNzQyMzU4OTIxLCJleHAiOjE3NDI0NDUzMjF9.XuLCxYuXMhLx33eHg6ceEg5yFz_PfZ3cn2uwSQN77Tc
 
 
