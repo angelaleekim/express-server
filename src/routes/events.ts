@@ -73,7 +73,7 @@ export function registerEventRoutes(
       const eventProvider = new EventProvider(mongoClient);
       const bookedEvents = await eventProvider.getBookedEventsForUser(username);
 
-      res.status(200).json(bookedEvents);
+      res.status(200).json(bookedEvents); // Send the full objects of booked events
     } catch (error) {
       res.status(500).send("Error retrieving booked events");
     }
@@ -107,7 +107,16 @@ export function registerEventRoutes(
 
         res.status(200).send({ message: "Event booked successfully" });
       } catch (error) {
-        res.status(500).send("Error booking event");
+        if (
+          error instanceof Error &&
+          error.message === "Event already booked"
+        ) {
+          res
+            .status(400)
+            .send({ error: "Bad Request", message: error.message });
+        } else {
+          res.status(500).send("Error booking event");
+        }
       }
     }
   );

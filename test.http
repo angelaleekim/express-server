@@ -163,7 +163,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ld
 
 ### Get booked events for the logged-in user
 GET http://localhost:3000/api/events/booked
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ld3VzZXI2IiwiaWF0IjoxNzQyMzU4OTIxLCJleHAiOjE3NDI0NDUzMjF9.XuLCxYuXMhLx33eHg6ceEg5yFz_PfZ3cn2uwSQN77Tc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ld3VzZXIyIiwiaWF0IjoxNzQyMzY2NjMxLCJleHAiOjE3NDI0NTMwMzF9.HXaDIO00Zv5GxZ5zlJYuHiFI00CShWzhIHCUTp65BD8
 
 ### Get all booked events for the logged-in user
 GET http://localhost:3000/api/events/booked
