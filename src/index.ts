@@ -3,7 +3,6 @@ import { MongoClient } from "mongodb";
 import dotenv from "dotenv";
 import { registerEventRoutes } from "./routes/events";
 import { registerAuthRoutes, verifyAuthToken } from "./routes/auth";
-import cors from "cors"; // Add this import
 
 dotenv.config();
 const PORT = parseInt(process.env.PORT || "3000", 10);
@@ -20,7 +19,6 @@ async function setUpServer() {
   const collectionInfos = await mongoClient.db().listCollections().toArray();
 
   const app = express();
-  app.use(cors({ origin: "*" })); // Allow all origins for development
   app.use(express.static(staticDir));
   app.use("/uploads", express.static(uploadDir)); // Serve uploaded images
   app.use(express.json()); // Add this line to parse JSON request bodies

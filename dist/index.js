@@ -35,7 +35,7 @@ async function setUpServer() {
     app.get("*", (req, res) => {
         res.sendFile(`${staticDir}/index.html`);
     });
-    app.listen(PORT, () => {
+    app.listen(PORT, "0.0.0.0", () => {
         console.log(`Server running at http://localhost:${PORT}`);
     });
 }
