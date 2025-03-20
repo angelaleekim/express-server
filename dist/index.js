@@ -10,7 +10,7 @@ const events_1 = require("./routes/events");
 const auth_1 = require("./routes/auth");
 const cors_1 = __importDefault(require("cors")); // Add this import
 dotenv_1.default.config();
-const PORT = process.env.PORT || 3000;
+const PORT = parseInt(process.env.PORT || "3000", 10);
 const staticDir = process.env.STATIC_DIR || "public";
 const uploadDir = process.env.IMAGE_UPLOAD_DIR || "uploads";
 const { MONGO_USER, MONGO_PWD, MONGO_CLUSTER, DB_NAME } = process.env;
@@ -20,7 +20,7 @@ async function setUpServer() {
     const mongoClient = await mongodb_1.MongoClient.connect(connectionString);
     const collectionInfos = await mongoClient.db().listCollections().toArray();
     const app = (0, express_1.default)();
-    app.use((0, cors_1.default)()); // Add this line to enable CORS
+    app.use((0, cors_1.default)({ origin: "*" })); // Allow all origins for development
     app.use(express_1.default.static(staticDir));
     app.use("/uploads", express_1.default.static(uploadDir)); // Serve uploaded images
     app.use(express_1.default.json()); // Add this line to parse JSON request bodies
@@ -31,11 +31,12 @@ async function setUpServer() {
     // Middleware to verify auth token, excluding OPTIONS requests
     app.use("/api/*", auth_1.verifyAuthToken);
     (0, events_1.registerEventRoutes)(app, mongoClient);
+    // Fallback route to serve the frontend's index.html for SPA
     app.get("*", (req, res) => {
-        // Removed unnecessary log
+        res.sendFile(`${staticDir}/index.html`);
     });
     app.listen(PORT, () => {
-        console.log(`Server is running on http://localhost:${PORT}`);
+        console.log(`Server running at http://localhost:${PORT}`);
     });
 }
 setUpServer().catch((error) => {
