@@ -6,7 +6,7 @@ import { registerAuthRoutes, verifyAuthToken } from "./routes/auth";
 import cors from "cors"; // Add this import
 
 dotenv.config();
-const PORT = process.env.PORT || 3000;
+const PORT = parseInt(process.env.PORT || "3000", 10);
 const staticDir = process.env.STATIC_DIR || "public";
 const uploadDir = process.env.IMAGE_UPLOAD_DIR || "uploads";
 
@@ -20,7 +20,7 @@ async function setUpServer() {
   const collectionInfos = await mongoClient.db().listCollections().toArray();
 
   const app = express();
-  app.use(cors()); // Add this line to enable CORS
+  app.use(cors({ origin: "*" })); // Allow all origins for development
   app.use(express.static(staticDir));
   app.use("/uploads", express.static(uploadDir)); // Serve uploaded images
   app.use(express.json()); // Add this line to parse JSON request bodies
@@ -35,12 +35,13 @@ async function setUpServer() {
   app.use("/api/*", verifyAuthToken);
   registerEventRoutes(app, mongoClient);
 
+  // Fallback route to serve the frontend's index.html for SPA
   app.get("*", (req: Request, res: Response) => {
-    // Removed unnecessary log
+    res.sendFile(`${staticDir}/index.html`);
   });
 
-  app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server is running on http://0.0.0.0:${PORT}`);
   });
 }
 
