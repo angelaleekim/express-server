@@ -37,14 +37,16 @@ export class EventProvider {
 
     const events = await eventCollection.find({}).toArray();
 
-    return events.map((event) => ({
-      _id: event._id.toHexString(), // Convert ObjectId to string
-      name: event.name,
-      date: event.date,
-      description: event.description,
-      attendees: event.attendees,
-      organizer: event.organizer,
-    }));
+    return events.map(
+      (event: Omit<EventDocument, "id"> & { _id: ObjectId }) => ({
+        _id: event._id.toHexString(), // Convert ObjectId to string
+        name: event.name,
+        date: event.date,
+        description: event.description,
+        attendees: event.attendees,
+        organizer: event.organizer,
+      })
+    );
   }
 
   async createEvent(event: Omit<EventDocument, "id">): Promise<void> {
@@ -231,13 +233,15 @@ export class EventProvider {
       .find({ _id: { $in: bookedEventIds } })
       .toArray();
 
-    return bookedEvents.map((event) => ({
-      _id: event._id.toHexString(),
-      name: event.name,
-      date: event.date,
-      description: event.description,
-      attendees: event.attendees,
-      organizer: event.organizer,
-    }));
+    return bookedEvents.map(
+      (event: Omit<EventDocument, "id"> & { _id: ObjectId }) => ({
+        _id: event._id.toHexString(),
+        name: event.name,
+        date: event.date,
+        description: event.description,
+        attendees: event.attendees,
+        organizer: event.organizer,
+      })
+    );
   }
 }
